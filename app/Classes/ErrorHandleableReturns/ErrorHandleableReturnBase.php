@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Classes\ErrorHandleableReturns;
 
 use App\Classes\BaseError;
