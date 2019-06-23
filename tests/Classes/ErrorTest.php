@@ -33,7 +33,7 @@ class ErrorTest extends TestCase
         $error = new Error();
         $error->setCode(Error::INVALID_INPUT);
 
-        $this->assertEquals('无效的参数。', $error->getMessage());
+        $this->assertEquals('無效的參數。', $error->getMessage());
     }
 
     /**
