@@ -2,6 +2,43 @@
 
 use Illuminate\Support\Str;
 
+if ( ! function_exists('sqlite_testing_storage_path')) {
+
+    /**
+     * Get the path to the sqlite_testing storage folder.
+     *
+     * Storage path supported: "memory", "temporary", "storage"
+     *
+     * @param  string  $path
+     * @return string
+     */
+    function sqlite_testing_storage_path($path = '')
+    {
+        $strict = config('database.connections.sqlite_testing.strict');
+        $storage = env('TEST_STORAGE', 'storage');
+
+        $storagePath = '';
+
+        // 根據指定的存放空間類型，決定測試資料的存放路徑
+        if ($storage == 'memory') {
+            $storagePath = '/dev/shm';
+        }
+        if ($storage == 'temporary') {
+            $storagePath = '/tmp';
+        }
+        if ($storage == 'storage') {
+            $storagePath = storage_path();
+        }
+
+        // 根據嚴格模式與目錄存在性，決定是否使用預設的存放路徑
+        if ( ! $strict and ! is_dir($storagePath)) {
+            $storagePath = storage_path();
+        }
+
+        return sprintf('%s/testing/%s', $storagePath, $path);
+    }
+}
+
 return [
 
     /*
@@ -41,6 +78,15 @@ return [
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+        ],
+
+        'sqlite_testing' => [
+            'driver' => 'sqlite',
+            'path' => sqlite_testing_storage_path(),
+            'database' => sqlite_testing_storage_path('testing.sqlite'),
+
+            'prefix' => '',
+            'strict' => false,
         ],
 
         'mysql' => [
