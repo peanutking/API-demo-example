@@ -139,4 +139,42 @@ class UserModelTest extends DatabaseTestCase
         $this->assertTrue($result->hasError());
         $this->assertEquals($expectedError, $result->getError());
     }
+
+    /**
+     * 測試透過使用者編號更新使用者密碼
+     *
+     * @return void
+     */
+    public function testupdatePasswordByUserId()
+    {
+        $encryptedPassword = password_hash('987654321', PASSWORD_BCRYPT);
+
+        $userModel = new UserModel();
+        $result = $userModel->updatePasswordByUserId(1, $encryptedPassword);
+
+        $this->assertFalse($result->hasError());
+        $updateUser = $userModel->getById(1)->getValue();
+        $this->assertTrue($updateUser->isPasswordCorrect('987654321'));
+    }
+
+    /**
+     * 測試透過使用者編號更新使用者密碼，如果發生資料庫錯誤
+     *
+     * @return void
+     */
+    public function testupdatePasswordByUserIdIfDatabaseErrorOccurred()
+    {
+        $expectedError = new Error(Error::DATABASE_ERROR);
+
+        $encryptedPassword = password_hash('987654321', PASSWORD_BCRYPT);
+
+        DB::shouldReceive('update')->once()
+            ->andThrow('PDOException');
+
+        $userModel = new UserModel();
+        $result = $userModel->updatePasswordByUserId(1, $encryptedPassword);
+
+        $this->assertTrue($result->hasError());
+        $this->assertEquals($expectedError, $result->getError());
+    }
 }

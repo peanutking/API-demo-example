@@ -76,4 +76,33 @@ class UserModel extends DatabaseResourceModel
         $newUser->setId($latestId);
         return new ErrorHandleableReturnBoolean(true);
     }
+
+    /**
+     * 透過使用者編號更新使用者密碼
+     *
+     * @param int $userId
+     * @param string $encryptedPassword
+     * @return ErrorHandleableReturnBoolean
+     */
+    public function updatePasswordByUserId(int $userId, string $encryptedPassword) : ErrorHandleableReturnBoolean
+    {
+        $sql = sprintf("
+            UPDATE `user`
+            SET    `sPassword` = '%s'
+                ,  `iUpdatedTimestamp` = %s
+            WHERE  `ixUser` = %u"
+        , $encryptedPassword
+        , SqlQueryHelper::getSyntaxOfCurrentSqlTimestamp()
+        , $userId);
+        $updateResult = QueryExecutor::update($sql);
+        if ($updateResult->hasError()) {
+            return new ErrorHandleableReturnBoolean(
+                false,
+                $updateResult->getError()
+            );
+        }
+
+        $effectedRow = $updateResult->getValue();
+        return new ErrorHandleableReturnBoolean($effectedRow > 0);
+    }
 }
