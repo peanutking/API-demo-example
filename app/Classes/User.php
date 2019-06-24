@@ -1,7 +1,7 @@
 <?php
 namespace App\Classes;
 
-class User 
+class User implements DatabaseResource
 {
     private $ixUser = 0;
     private $sUsername = '';
