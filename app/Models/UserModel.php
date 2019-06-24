@@ -5,6 +5,7 @@ use App\Classes\DatabaseResource\User;
 use App\Classes\DatabaseResource\DatabaseResource;
 use App\Classes\Error\Error;
 use App\Classes\ErrorHandleableReturns\ErrorHandleableReturnBoolean;
+use App\Classes\ErrorHandleableReturns\ErrorHandleableReturnObject;
 use App\Classes\Tools\QueryExecutor;
 use App\Classes\Tools\SqlQueryHelper;
 
@@ -104,5 +105,32 @@ class UserModel extends DatabaseResourceModel
 
         $effectedRow = $updateResult->getValue();
         return new ErrorHandleableReturnBoolean($effectedRow > 0);
+    }
+
+    /**
+     * 透過使用者名稱取得使用者
+     *
+     * @param string $username
+     * @return ErrorHandleableReturnObject
+     */
+    public function getByUsername(string $userame) : ErrorHandleableReturnObject
+    {
+        $sql = sprintf("
+            SELECT *
+            FROM `user`
+            WHERE `sUsername` = '%s'"
+        , $userame);
+        $selectResult = QueryExecutor::select($sql);
+        if ($selectResult->hasError()) {
+            return new ErrorHandleableReturnObject(
+                new User(),
+                $selectResult->getError()
+            );
+        }
+        
+        $selectRow = $selectResult->getValue();
+        $user = new User();
+        $user->loadFromArray($selectRow[0]);
+        return new ErrorHandleableReturnObject($user);
     }
 }

@@ -177,4 +177,44 @@ class UserModelTest extends DatabaseTestCase
         $this->assertTrue($result->hasError());
         $this->assertEquals($expectedError, $result->getError());
     }
+
+    /**
+     * 測試透過使用者名稱取得物件
+     *
+     * @return void
+     */
+    public function testGetByUsername()
+    {
+        $content['ixUser'] = 1;
+        $content['sUsername'] = 'Alex';
+        $content['sPassword'] = '$2y$10$.IukgQA8BibAzmHNe01U2eJUpaseXNsemWXRdM5GXTFyJxShzSvou';
+        $content['iCreatedTimestamp'] = 123456789;
+        $content['iUpdatedTimestamp'] = null;
+        $expectedUser = new User();
+        $expectedUser->loadFromArray($content);
+
+        $userModel = new UserModel();
+        $result = $userModel->getByUsername('Alex');
+
+        $this->assertEquals($expectedUser, $result->getValue());
+    }
+
+    /**
+     * 測試透過使用者名稱取得物件，如果發生資料庫錯誤
+     *
+     * @return void
+     */
+    public function testGetByUsernameIfDatabaseErrorOccurred()
+    {
+        $expectedError = new Error(Error::DATABASE_ERROR);
+
+        DB::shouldReceive('select')->once()
+            ->andThrow('PDOException');
+
+        $userModel = new UserModel();
+        $result = $userModel->getByUsername('Alex');
+
+        $this->assertTrue($result->hasError());
+        $this->assertEquals($expectedError, $result->getError());
+    }
 }
