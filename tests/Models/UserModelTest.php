@@ -37,7 +37,7 @@ class UserModelTest extends DatabaseTestCase
      */
     public function testGetByIdIfIdNotExist()
     {
-        $expectedError = new Error(ERROR::RESOURCE_NOT_FOUND);
+        $expectedError = new Error(Error::RESOURCE_NOT_FOUND);
 
         $userModel = new UserModel();
         $result = $userModel->getById(99);
@@ -53,13 +53,88 @@ class UserModelTest extends DatabaseTestCase
      */
     public function testGetByIdIfDatabaseErrorOccurred()
     {
-        $expectedError = new Error(ERROR::DATABASE_ERROR);
+        $expectedError = new Error(Error::DATABASE_ERROR);
 
         DB::shouldReceive('select')->once()
             ->andThrow('PDOException');
 
         $userModel = new UserModel();
         $result = $userModel->getById(1);
+
+        $this->assertTrue($result->hasError());
+        $this->assertEquals($expectedError, $result->getError());
+    }
+
+    /**
+     * 測試新增使用者
+     *
+     * @return void
+     */
+    public function testInsertNewUser()
+    {
+        $user = new User();
+        $user->setUsername('Peter');
+        $encryptedPassword = password_hash('123456789', PASSWORD_BCRYPT);
+        $userModel = new UserModel();
+        $result = $userModel->insertNewUser($user, $encryptedPassword);
+
+        $this->assertFalse($result->hasError());
+        $this->assertEquals(5, $user->getId());
+    }
+
+    /**
+     * 測試新增使用者，如果發生資料庫錯誤
+     *
+     * @return void
+     */
+    public function testInsertNewUserIfDatabaseErrorOccurred()
+    {
+        $expectedError = new Error(Error::DATABASE_ERROR);
+
+        $user = new User();
+        $user->setUsername('Peter');
+        $encryptedPassword = password_hash('123456789', PASSWORD_BCRYPT);
+
+        DB::shouldReceive('insert')->once()
+            ->andThrow('PDOException');
+
+        $userModel = new UserModel();
+        $result = $userModel->insertNewUser($user, $encryptedPassword);
+
+        $this->assertTrue($result->hasError());
+        $this->assertEquals($expectedError, $result->getError());
+    }
+
+    /**
+     * 測試新增使用者，如果取得最新新增編號發生資料庫錯誤
+     *
+     * @return void
+     */
+    public function testInsertNewUserIfDataErrorWhenGetLastInsertId()
+    {
+        $expectedError = new Error(Error::FORBIDDEN);
+
+        $user = new User();
+        $user->setUsername('Peter');
+        $encryptedPassword = password_hash('123456789', PASSWORD_BCRYPT);
+
+        $pdo = $this->getMockBuilder('PDO')
+            ->disableOriginalConstructor()
+            ->setMethods(array('lastInsertId'))
+            ->getMock();
+        $pdo->expects($this->once())
+            ->method('lastInsertId')
+            ->willThrowException(new \PDOException());
+
+        DB::shouldReceive('insert')->once()
+            ->andReturn(true);
+        
+        DB::shouldReceive('getPdo')
+            ->once()
+            ->andReturn($pdo);    
+
+        $userModel = new UserModel();
+        $result = $userModel->insertNewUser($user, $encryptedPassword);
 
         $this->assertTrue($result->hasError());
         $this->assertEquals($expectedError, $result->getError());
