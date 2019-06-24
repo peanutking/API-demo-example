@@ -127,10 +127,33 @@ class UserModel extends DatabaseResourceModel
                 $selectResult->getError()
             );
         }
-        
+
         $selectRow = $selectResult->getValue();
         $user = new User();
         $user->loadFromArray($selectRow[0]);
         return new ErrorHandleableReturnObject($user);
+    }
+
+    /**
+     * 透過使用者編號刪除使用者
+     *
+     * @param string $username
+     * @return ErrorHandleableReturnBoolean
+     */
+    public function deleteById(int $userId) : ErrorHandleableReturnBoolean
+    {
+        $sql = sprintf("
+            DELETE FROM `user`
+            WHERE `ixUser` = %u"
+        , $userId);
+        $deleteResult = QueryExecutor::delete($sql);
+        if ($deleteResult->hasError()) {
+            return new ErrorHandleableReturnBoolean(
+                false,
+                $deleteResult->getError()
+            );
+        }
+        $effectedRow = $deleteResult->getValue();
+        return new ErrorHandleableReturnBoolean($effectedRow > 0);
     }
 }

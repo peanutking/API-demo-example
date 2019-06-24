@@ -217,4 +217,36 @@ class UserModelTest extends DatabaseTestCase
         $this->assertTrue($result->hasError());
         $this->assertEquals($expectedError, $result->getError());
     }
+
+        /**
+     * 測試透過使用者編號刪除使用者
+     *
+     * @return void
+     */
+    public function testDeleteById()
+    {
+        $userModel = new UserModel();
+        $result = $userModel->deleteById(1);
+
+        $this->assertFalse($result->hasError());
+        $this->assertTrue($result->getValue());
+    }
+
+    /**
+     * 測試透過使用者編號刪除使用者，如果發生資料庫錯誤
+     *
+     * @return void
+     */
+    public function testDeleteByIdIfDatabaseErrorOccurred()
+    {
+        $expectedError = new Error(Error::DATABASE_ERROR);
+        DB::shouldReceive('delete')->once()
+            ->andThrow('PDOException');
+
+        $userModel = new UserModel();
+        $result = $userModel->deleteById(1);
+
+        $this->assertTrue($result->hasError());
+        $this->assertEquals($expectedError, $result->getError());
+    }
 }
