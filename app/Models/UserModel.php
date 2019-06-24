@@ -1,8 +1,8 @@
 <?php
 namespace App\Models;
 
-use App\Classes\User;
-use App\Classes\DatabaseResource;
+use App\Classes\DatabaseResource\User;
+use App\Classes\DatabaseResource\DatabaseResource;
 
 class UserModel extends DatabaseResourceModel
 {

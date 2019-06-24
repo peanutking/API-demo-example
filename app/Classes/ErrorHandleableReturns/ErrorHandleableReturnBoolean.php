@@ -1,7 +1,7 @@
 <?php
 namespace App\Classes\ErrorHandleableReturns;
 
-use App\Classes\BaseError;
+use App\Classes\Error\BaseError;
 
 class ErrorHandleableReturnBoolean extends ErrorHandleableReturnBase
 {

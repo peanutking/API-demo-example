@@ -2,7 +2,7 @@
 namespace Tests\Classes;
 
 use Tests\TestCase;
-use App\Classes\User;
+use App\Classes\DatabaseResource\User;
 
 class UserTest extends TestCase
 {

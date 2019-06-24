@@ -3,7 +3,7 @@ namespace Tests\Classes\ErrorHandleableReturns;
 
 use Tests\TestCase;
 use App\Classes\ErrorHandleableReturns\ErrorHandleableReturnArray;
-use App\Classes\Error;
+use App\Classes\Error\Error;
 
 class ErrorHandleableReturnArrayTest extends TestCase
 {

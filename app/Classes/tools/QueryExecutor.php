@@ -1,9 +1,10 @@
 <?php
-namespace App\Classes;
+namespace App\Classes\Tools;
 
 use App\Classes\ErrorHandleableReturns\ErrorHandleableReturnArray;
 use App\Classes\ErrorHandleableReturns\ErrorHandleableReturnBoolean;
 use App\Classes\ErrorHandleableReturns\ErrorHandleableReturnInteger;
+use App\Classes\Error\Error;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 

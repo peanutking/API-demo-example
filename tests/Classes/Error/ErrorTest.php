@@ -1,8 +1,8 @@
 <?php
-namespace Tests\Classes;
+namespace Tests\Classes\Error;
 
 use Tests\TestCase;
-use App\Classes\Error;
+use App\Classes\Error\Error;
 
 class ErrorTest extends TestCase
 {

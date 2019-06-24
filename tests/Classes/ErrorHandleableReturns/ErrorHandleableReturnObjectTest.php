@@ -3,8 +3,8 @@ namespace Tests\Classes\ErrorHandleableReturns;
 
 use Tests\TestCase;
 use App\Classes\ErrorHandleableReturns\ErrorHandleableReturnObject;
-use App\Classes\Error;
-use App\Classes\User;
+use App\Classes\Error\Error;
+use App\Classes\DatabaseResource\User;
 
 class ErrorHandleableReturnObjectTest extends TestCase
 {

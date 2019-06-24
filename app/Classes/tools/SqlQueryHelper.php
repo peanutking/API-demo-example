@@ -1,5 +1,5 @@
 <?php
-namespace App\Classes\tools;
+namespace App\Classes\Tools;
 
 class SqlQueryHelper
 {

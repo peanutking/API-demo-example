@@ -1,10 +1,10 @@
 <?php
 namespace App\Models;
 
-use App\Classes\DatabaseResource;
+use App\Classes\DatabaseResource\DatabaseResource;
 use App\Classes\ErrorHandleableReturns\ErrorHandleableReturnObject;
-use App\Classes\QueryExecutor;
-use App\Classes\Error;
+use App\Classes\Tools\QueryExecutor;
+use App\Classes\Error\Error;
 
 abstract class DatabaseResourceModel
 {

@@ -1,8 +1,8 @@
 <?php
 namespace App\Classes\ErrorHandleableReturns;
 
-use App\Classes\BaseError;
-use App\Classes\Error;
+use App\Classes\Error\BaseError;
+use App\Classes\Error\Error;
 
 abstract class ErrorHandleableReturnBase
 {

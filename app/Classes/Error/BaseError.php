@@ -1,5 +1,5 @@
 <?php
-namespace App\Classes;
+namespace App\Classes\Error;
 
 abstract class BaseError
 {

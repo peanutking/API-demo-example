@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Classes;
+namespace Tests\Classes\Tools;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
@@ -7,8 +7,8 @@ use Tests\DatabaseTestCase;
 use PDOException;
 use Mockery;
 use Illuminate\Support\Facades\DB;
-use App\Classes\QueryExecutor;
-use App\Classes\Error;
+use App\Classes\Tools\QueryExecutor;
+use App\Classes\Error\Error;
 
 class QueryExecutorTest extends DatabaseTestCase
 {

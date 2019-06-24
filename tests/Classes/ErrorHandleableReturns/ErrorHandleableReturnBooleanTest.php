@@ -2,7 +2,7 @@
 namespace Tests\Classes\ErrorHandleableReturns;
 
 use Tests\TestCase;
-use App\Classes\Error;
+use App\Classes\Error\Error;
 use App\Classes\ErrorHandleableReturns\ErrorHandleableReturnBoolean;
 
 class ErrorHandleableReturnBooleanTest extends TestCase

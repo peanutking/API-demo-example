@@ -1,8 +1,8 @@
 <?php
-namespace App\Models;
+namespace Tests\Models;
 
-use App\Classes\User;
-use App\Classes\Error;
+use App\Classes\DatabaseResource\User;
+use App\Classes\Error\Error;
 use App\Models\UserModel;
 use Tests\DatabaseTestCase;
 use Illuminate\Support\Facades\DB;

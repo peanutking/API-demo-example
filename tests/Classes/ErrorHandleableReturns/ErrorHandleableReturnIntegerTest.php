@@ -3,7 +3,7 @@ namespace Tests\Classes\ErrorHandleableReturns;
 
 use Tests\TestCase;
 use App\Classes\ErrorHandleableReturns\ErrorHandleableReturnInteger;
-use App\Classes\Error;
+use App\Classes\Error\Error;
 
 class ErrorHandleableReturnIntegerTest extends TestCase
 {
