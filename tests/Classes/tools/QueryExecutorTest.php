@@ -34,8 +34,13 @@ class QueryExecutorTest extends DatabaseTestCase
             INSERT INTO `user`
              (`sUsername`, `sPassword`, `iCreatedTimestamp`)
             VALUES
-             ('Peter', 'bYcFpyWTfT6D3WxAyvCAMw3YzBnFhby62ABZK9JBDs5hdsHBLaMqgEYtRXXL', 1513098301)";
-        $handler = QueryExecutor::insert($sqlQuery);
+             (:userName , :password, :timestamp)";
+        $bindings = array(
+            'userName' => 'Peter',
+            'password' => 'bYcFpyWTfT6D3WxAyvCAMw3YzBnFhby62ABZK9JBDs5hdsHBLaMqgEYtRXXL',
+            'timestamp' => 1513098301
+        );
+        $handler = QueryExecutor::insert($sqlQuery,  $bindings);
 
         $this->assertTrue($handler->getValue());
         $this->assertFalse($handler->hasError());
@@ -83,8 +88,10 @@ class QueryExecutorTest extends DatabaseTestCase
         $sqlQuery = "
             SELECT *
             FROM   `user`
-            WHERE  `ixUser` = 1";
-        $returnValue = QueryExecutor::select($sqlQuery);
+            WHERE  `ixUser` = :id";
+
+        $bindings = array('id' => 1);
+        $returnValue = QueryExecutor::select($sqlQuery, $bindings);
         $selectResult = $returnValue->getValue();
 
         $this->assertFalse($returnValue->hasError());
@@ -125,12 +132,16 @@ class QueryExecutorTest extends DatabaseTestCase
     {
         $expectedValue = 1;
 
-        $sqlQuery = sprintf("
+        $sqlQuery = "
             UPDATE `user`
-            SET    `iUpdatedTimestamp` = %u
-            WHERE  `ixUser` = 1"
-            , time());
-        $returnValue = QueryExecutor::update($sqlQuery);
+            SET    `iUpdatedTimestamp` = :timestamp
+            WHERE  `ixUser` = :id";
+
+        $bindings = array(
+            'timestamp' => time(),
+            'id' => 1
+        );
+        $returnValue = QueryExecutor::update($sqlQuery, $bindings);
 
         $this->assertFalse($returnValue->hasError());
         $this->assertEquals($expectedValue, $returnValue->getValue());
@@ -147,8 +158,12 @@ class QueryExecutorTest extends DatabaseTestCase
 
         $sqlQuery = "
             DELETE FROM `user`
-            WHERE       `ixUser` = 1";
-        $returnValue = QueryExecutor::delete($sqlQuery);
+            WHERE       `ixUser` = :id";
+        $bindings = array(
+            'id' => 1
+        );
+
+        $returnValue = QueryExecutor::delete($sqlQuery, $bindings);
 
         $this->assertFalse($returnValue->hasError());
         $this->assertEquals($expectedValue, $returnValue->getValue());
