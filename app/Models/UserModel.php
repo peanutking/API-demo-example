@@ -5,7 +5,7 @@ use App\Classes\DatabaseResource\User;
 use App\Classes\DatabaseResource\DatabaseResource;
 use App\Classes\Error\Error;
 use App\Classes\ErrorHandleableReturns\ErrorHandleableReturnBoolean;
-use App\Classes\ErrorHandleableReturns\ErrorHandleableReturnObject;
+use App\Classes\ErrorHandleableReturns\ErrorHandleableReturnDatabaseResource;
 use App\Classes\Tools\QueryExecutor;
 use App\Classes\Tools\SqlQueryHelper;
 
@@ -54,11 +54,13 @@ class UserModel extends DatabaseResourceModel
             INSERT INTO `user`
                 (`sUsername`, `sPassword`, `iCreatedTimestamp`)
             VALUES
-                ('%s', '%s', %s)"
-            , $newUser->getUsername()
-            , $encryptedPassword
+                (:username, :password, %s)"
             , SqlQueryHelper::getSyntaxOfCurrentSqlTimestamp());
-        $insertResult = QueryExecutor::insert($sql);
+        $bindingValues = array(
+            'username' => $newUser->getUsername(),
+            'password' => $encryptedPassword
+        );
+        $insertResult = QueryExecutor::insert($sql, $bindingValues);
         if ($insertResult->hasError()) {
             return new ErrorHandleableReturnBoolean(
                 false,
@@ -89,13 +91,16 @@ class UserModel extends DatabaseResourceModel
     {
         $sql = sprintf("
             UPDATE `user`
-            SET    `sPassword` = '%s'
+            SET    `sPassword` = :password
                 ,  `iUpdatedTimestamp` = %s
-            WHERE  `ixUser` = %u"
-        , $encryptedPassword
-        , SqlQueryHelper::getSyntaxOfCurrentSqlTimestamp()
-        , $userId);
-        $updateResult = QueryExecutor::update($sql);
+            WHERE  `ixUser` = :userId"
+        , SqlQueryHelper::getSyntaxOfCurrentSqlTimestamp());
+
+        $bindingValues = array(
+            'password' => $encryptedPassword,
+            'userId' => $userId
+        );
+        $updateResult = QueryExecutor::update($sql, $bindingValues);
         if ($updateResult->hasError()) {
             return new ErrorHandleableReturnBoolean(
                 false,
@@ -111,27 +116,19 @@ class UserModel extends DatabaseResourceModel
      * 透過使用者名稱取得使用者
      *
      * @param string $username
-     * @return ErrorHandleableReturnObject
+     * @return ErrorHandleableReturnDatabaseResource
      */
-    public function getByUsername(string $userame) : ErrorHandleableReturnObject
+    public function getByUsername(string $username) : ErrorHandleableReturnDatabaseResource
     {
-        $sql = sprintf("
+        $sql = "
             SELECT *
             FROM `user`
-            WHERE `sUsername` = '%s'"
-        , $userame);
-        $selectResult = QueryExecutor::select($sql);
-        if ($selectResult->hasError()) {
-            return new ErrorHandleableReturnObject(
-                new User(),
-                $selectResult->getError()
-            );
-        }
+            WHERE `sUsername` = :username";
 
-        $selectRow = $selectResult->getValue();
-        $user = new User();
-        $user->loadFromArray($selectRow[0]);
-        return new ErrorHandleableReturnObject($user);
+        $bindingValues = array(
+            'username' => $username
+        );
+        return $this->selectResource($sql, $bindingValues);
     }
 
     /**
@@ -142,11 +139,13 @@ class UserModel extends DatabaseResourceModel
      */
     public function deleteById(int $userId) : ErrorHandleableReturnBoolean
     {
-        $sql = sprintf("
+        $sql = "
             DELETE FROM `user`
-            WHERE `ixUser` = %u"
-        , $userId);
-        $deleteResult = QueryExecutor::delete($sql);
+            WHERE `ixUser` = :userId";
+        $bindingValues = array(
+            'userId' => $userId
+        );
+        $deleteResult = QueryExecutor::delete($sql, $bindingValues);
         if ($deleteResult->hasError()) {
             return new ErrorHandleableReturnBoolean(
                 false,
