@@ -19,11 +19,11 @@ class ErrorResponseCreatorTest extends TestCase
         $error = new Error(Error::INVALID_INPUT);
         $errorResponseCreator = new ErrorResponseCreator($error);
         $errorResponseCreator
-            ->whenErrorIs(Error::INVALID_INPUT)
+            ->whenErrorIn(Error::INVALID_INPUT)
                 ->willRespondStatusCode(Response::HTTP_BAD_REQUEST)
                 ->willRespondApiError(new ApiError(ApiError::INVALID_INPUT))
                 ->willResponseCustomErrorMessage('Invalid operation.')
-            ->whenErrorIs(Error::DATABASE_ERROR)
+            ->whenErrorIn(Error::DATABASE_ERROR, Error::RESOURCE_NOT_BUILD)
                 ->willRespondStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
                 ->willRespondApiError(new ApiError(ApiError::INTERNAL_SERVER_ERROR))
                 ->willResponseCustomErrorMessage('未知的錯誤。');

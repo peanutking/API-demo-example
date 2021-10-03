@@ -46,9 +46,9 @@ class ErrorResponseCreator
      * @param int $errorCode
      * @return ErrorResponseCreator
      */
-    public function whenErrorIs(int $errorCode) : ErrorResponseCreator
+    public function whenErrorIn(int ...$errorCodes) : ErrorResponseCreator
     {
-        $this->temporaryErrorSituation = new ErrorResponseSituation($errorCode);
+        $this->temporaryErrorSituation = new ErrorResponseSituation($errorCodes);
         $this->responseControlGroups[] = $this->temporaryErrorSituation;
 
         return $this;
@@ -101,7 +101,7 @@ class ErrorResponseCreator
     public function create() : JsonResponse
     {
         foreach ($this->responseControlGroups as $errorResponseSituation) {
-            if ($errorResponseSituation->getErrorCode() == $this->internalError->getCode()) {
+            if (in_array($this->internalError->getCode(), $errorResponseSituation->getErrorCodes())) {
                 $content = $errorResponseSituation->getApiError()->toResponseContent();
 
                 $customMessage = $errorResponseSituation->getCustomErrorMessage();

@@ -6,7 +6,7 @@ use App\Classes\Error\BaseApiError;
 
 class ErrorResponseSituation
 {
-    private $errorCode = 0;
+    private $errorCodes = array();
     private $apiError = null;
     private $customErrorMessage = '';
     private $responseStatusCode = 0;
@@ -14,22 +14,22 @@ class ErrorResponseSituation
     /**
      * ErrorResponseSituation constructor.
      *
-     * @param int $errorCode
+     * @param array $errorCode
      */
-    public function __construct(int $errorCode = Error::NO_ERROR)
+    public function __construct(array $errorCodes = array(Error::NO_ERROR))
     {
-        $this->setErrorCode($errorCode);
+        $this->setErrorCode($errorCodes);
     }
 
     /**
      * 設定錯誤代碼
      *
-     * @param int $errorCode
+     * @param array $errorCodes
      * @return void
      */
-    private function setErrorCode(int $errorCode)
+    private function setErrorCode(array $errorCodes)
     {
-        $this->errorCode = $errorCode;
+        $this->errorCodes = $errorCodes;
     }
 
     /**
@@ -68,11 +68,11 @@ class ErrorResponseSituation
     /**
      * 取得錯誤
      *
-     * @return int
+     * @return array
      */
-    public function getErrorCode() : int
+    public function getErrorCodes() : array
     {
-        return $this->errorCode;
+        return $this->errorCodes;
     }
 
     /**

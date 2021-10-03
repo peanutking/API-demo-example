@@ -16,9 +16,9 @@ class ErrorResponseSituationTest extends TestCase
      */
     public function testConstructor()
     {
-        $situation = new ErrorResponseSituation(Error::INVALID_INPUT);
+        $situation = new ErrorResponseSituation(array(Error::INVALID_INPUT));
 
-        $this->assertEquals(Error::INVALID_INPUT, $situation->getErrorCode());
+        $this->assertEquals(array(Error::INVALID_INPUT), $situation->getErrorCodes());
         $this->assertEmpty($situation->getCustomErrorMessage());
         $this->assertEquals(0, $situation->getStatusCode());
     }
@@ -30,16 +30,16 @@ class ErrorResponseSituationTest extends TestCase
      */
     public function testSetterAndGetter()
     {
-        $expectedError = new Error(Error::INVALID_INPUT);
+        $expectedErrorCodes = array(Error::INVALID_INPUT);
         $expectedApiError = new ApiError(ApiError::INTERNAL_SERVER_ERROR);
 
-        $situation = new ErrorResponseSituation(Error::INVALID_INPUT);
+        $situation = new ErrorResponseSituation(array(Error::INVALID_INPUT));
 
         $situation->setApiError(new ApiError(ApiError::INTERNAL_SERVER_ERROR));
         $situation->setCustomErrorMessage('test');
         $situation->setStatusCode(Response::HTTP_BAD_REQUEST);
 
-        $this->assertEquals($expectedError->getCode(), $situation->getErrorCode());
+        $this->assertEquals($expectedErrorCodes, $situation->getErrorCodes());
         $this->assertEquals($expectedApiError, $situation->getApiError());
         $this->assertEquals('test', $situation->getCustomErrorMessage());
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $situation->getStatusCode());
