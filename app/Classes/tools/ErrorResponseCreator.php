@@ -125,4 +125,20 @@ class ErrorResponseCreator
             JSON_UNESCAPED_UNICODE
         );
     }
+
+    /**
+     * 建立錯誤回應
+     *
+     * @param  ApiError     $apiError
+     * @param  int          $statusCode
+     * @return JsonResponse
+     */
+    public static function createErrorResponse(ApiError $apiError, int $statusCode) : JsonResponse
+    {
+        return response()
+            ->json($apiError->toArray()
+                , $statusCode
+                , self::DEFAULT_HEADERS
+                , JSON_UNESCAPED_UNICODE);
+    }
 }
