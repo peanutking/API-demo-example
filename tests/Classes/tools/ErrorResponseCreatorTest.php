@@ -5,6 +5,7 @@ use Tests\TestCase;
 use App\Classes\Error\ApiError;
 use App\Classes\Tools\ErrorResponseCreator;
 use App\Classes\Error\Error;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class ErrorResponseCreatorTest extends TestCase
@@ -62,5 +63,31 @@ class ErrorResponseCreatorTest extends TestCase
 
         $this->assertEquals('未知的錯誤。', $decodedResponse);
         $this->assertEquals(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
+    }
+
+     /**
+     * 測試建立錯誤回應
+     *
+     * @return void
+     */
+    public function testCreateErrorResponse()
+    {
+        $responseResponse = ErrorResponseCreator::createErrorResponse(
+            new ApiError(ApiError::INTERNAL_SERVER_ERROR),
+            Response::HTTP_INTERNAL_SERVER_ERROR
+        );
+
+        $expectedContent = array();
+        $expectedContent['error_code'] = ApiError::INTERNAL_SERVER_ERROR;
+        $expectedContent['error_message'] = '內部伺服器錯誤。';
+
+        $expectedResponse = new JsonResponse(
+            $expectedContent,
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            ErrorResponseCreator::DEFAULT_HEADERS,
+            JSON_UNESCAPED_UNICODE
+        );
+
+        $this->assertEquals($expectedResponse, $responseResponse);
     }
 }

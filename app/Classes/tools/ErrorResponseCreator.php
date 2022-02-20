@@ -3,13 +3,14 @@ namespace App\Classes\Tools;
 
 use App\Classes\Tools\ErrorResponseSituation;
 use App\Classes\Error\Error;
+use App\Classes\Error\ApiError;
 use App\Classes\Error\BaseApiError;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class ErrorResponseCreator
 {
-    const HEADER = array(
+    const DEFAULT_HEADERS = array(
         'Content-type'  => 'application/json; charset=utf-8',
         'Cache-Control' => 'no-cache, private'
     );
@@ -112,7 +113,7 @@ class ErrorResponseCreator
                 return new JsonResponse(
                     $content,
                     $errorResponseSituation->getStatusCode(),
-                    self::HEADER,
+                    self::DEFAULT_HEADERS,
                     JSON_UNESCAPED_UNICODE
                 );
             }
@@ -121,7 +122,7 @@ class ErrorResponseCreator
         return new JsonResponse(
             '未知的錯誤。',
             Response::HTTP_INTERNAL_SERVER_ERROR,
-            self::HEADER,
+            self::DEFAULT_HEADERS,
             JSON_UNESCAPED_UNICODE
         );
     }
@@ -136,7 +137,7 @@ class ErrorResponseCreator
     public static function createErrorResponse(ApiError $apiError, int $statusCode) : JsonResponse
     {
         return response()
-            ->json($apiError->toArray()
+            ->json($apiError->toResponseContent()
                 , $statusCode
                 , self::DEFAULT_HEADERS
                 , JSON_UNESCAPED_UNICODE);
