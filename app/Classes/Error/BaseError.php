@@ -5,9 +5,9 @@ abstract class BaseError
 {
     const NO_ERROR = 0;
 
-    private $code = 0;
-    private $message = '';
-    private $baseErrorMessage = array(
+    protected $code = 0;
+    protected $message = '';
+    protected $baseErrorMessage = array(
         self::NO_ERROR => '没有错误'
     );
 
