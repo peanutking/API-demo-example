@@ -3,3 +3,4 @@
  2. OOD
 
 Controller Location : app/Http/Controllers/UserController.php
+Unit Test Location : tests/UserController.php
